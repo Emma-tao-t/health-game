@@ -383,12 +383,12 @@
   .ac-tool-image {
     display: grid;
     width: 100%;
-    height: clamp(5.8rem, 22vw, 7rem);
+    height: 5.6rem;
     overflow: hidden;
     place-items: center;
     box-sizing: border-box;
     border-radius: 1rem;
-    padding: 0.62rem;
+    padding: 0.45rem;
     background:
       radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.72), transparent 44%),
       linear-gradient(180deg, rgba(223, 244, 255, 0.68), rgba(255, 243, 176, 0.28));
@@ -397,12 +397,13 @@
   .ac-tool-img,
   .ac-tool-image img,
   .ac-tool-image > div {
-    width: 100%;
-    height: 100%;
-    max-width: 100%;
-    max-height: 100%;
+    width: 72%;
+    height: 72%;
+    max-width: 8.4rem;
+    max-height: 4.4rem;
     object-fit: contain;
     object-position: center;
+    transform: none;
   }
 
   .ac-tool-card strong {
