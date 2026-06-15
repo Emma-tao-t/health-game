@@ -3,21 +3,15 @@ import CharacterSelectPage from "./pages/CharacterSelectPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import GamePage from "./pages/GamePage.jsx";
 import KnowledgeCollectionPage from "./pages/KnowledgeCollectionPage.jsx";
-import LoadingPage from "./pages/LoadingPage.jsx";
 import ResultPage from "./pages/ResultPage.jsx";
 import { characters } from "./data/characters.js";
 import { routes } from "./data/routes.js";
-import { toolImages } from "./data/toolImages.js";
-import { assetPath } from "./utils/assetPath.js";
 import { preloadImages } from "./utils/preloadImages.js";
 
 export default function App() {
-  const [assetsReady, setAssetsReady] = useState(false);
-  const [loadProgress, setLoadProgress] = useState(0);
   const [screen, setScreen] = useState("home");
   const [routeId, setRouteId] = useState("nick");
   const [result, setResult] = useState(null);
-  const coverImage = assetPath("/assets/cover/cover.jpg");
   const warmupList = useMemo(() => {
     const routeBackgrounds = Object.values(routes).flatMap((route) =>
       Object.values(route.nodes || {}).map((node) => node.background),
@@ -25,50 +19,23 @@ export default function App() {
     const characterImages = Object.values(characters).flatMap((character) =>
       Object.values(character.images || {}),
     );
-    const toolAssetImages = toolImages.map((tool) => tool.image);
 
-    return [
-      ...routeBackgrounds,
-      ...characterImages,
-      ...toolAssetImages,
-    ];
+    return [...routeBackgrounds, ...characterImages];
   }, []);
 
   useEffect(() => {
-    let active = true;
-
-    preloadImages([coverImage], (progress) => {
-      if (active) {
-        setLoadProgress(progress);
-      }
-    }).then(() => {
-      if (active) {
-        setAssetsReady(true);
-      }
-    });
-
-    return () => {
-      active = false;
-    };
-  }, [coverImage]);
-
-  useEffect(() => {
-    if (!assetsReady) {
-      return undefined;
-    }
-
     const startWarmup = () => {
       preloadImages(warmupList);
     };
 
     if ("requestIdleCallback" in window) {
-      const id = window.requestIdleCallback(startWarmup, { timeout: 1500 });
+      const id = window.requestIdleCallback(startWarmup, { timeout: 2500 });
       return () => window.cancelIdleCallback(id);
     }
 
-    const id = window.setTimeout(startWarmup, 250);
+    const id = window.setTimeout(startWarmup, 1200);
     return () => window.clearTimeout(id);
-  }, [assetsReady, warmupList]);
+  }, [warmupList]);
 
   function openCharacterSelect() {
     setResult(null);
@@ -84,10 +51,6 @@ export default function App() {
   function finishGame(nextResult) {
     setResult(nextResult);
     setScreen("result");
-  }
-
-  if (!assetsReady) {
-    return <LoadingPage progress={loadProgress} />;
   }
 
   if (screen === "home") {

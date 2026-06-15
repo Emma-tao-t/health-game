@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function SafeImage({ src, alt, className = "", fallbackLabel = "图片暂未加载" }) {
+export default function SafeImage({ src, alt, className = "", fallbackLabel = "图片暂未加载", loading = "lazy" }) {
   const [failed, setFailed] = useState(false);
 
   if (!src || failed) {
@@ -13,5 +13,5 @@ export default function SafeImage({ src, alt, className = "", fallbackLabel = "�
     );
   }
 
-  return <img src={src} alt={alt} className={className} onError={() => setFailed(true)} />;
+  return <img src={src} alt={alt} className={className} loading={loading} decoding="async" onError={() => setFailed(true)} />;
 }
