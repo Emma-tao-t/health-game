@@ -3,3 +3,6 @@ dist/
 .npm-cache/
 .npm-cache-2/
 *.log
+public/assets/**/*.tmp.png
+public/assets/characters-cutout/*-opt.png
+public/assets/cover/cover-test.jpg

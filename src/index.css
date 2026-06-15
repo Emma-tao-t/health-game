@@ -99,6 +99,65 @@
     font-size: clamp(1.05rem, 5vw, 1.35rem);
   }
 
+  .ac-loading-card {
+    display: grid;
+    min-height: calc(100dvh - 1.8rem);
+    align-content: center;
+    gap: 1rem;
+    border: 3px solid #5a3a2e;
+    border-radius: 2rem;
+    background:
+      radial-gradient(circle at 50% 18%, rgba(255, 223, 115, 0.78), transparent 32%),
+      linear-gradient(180deg, #fff9e8 0%, #e7f7d9 100%);
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 10px 0 rgba(90, 58, 46, 0.2);
+  }
+
+  .ac-loading-badge {
+    justify-self: center;
+    border: 2px solid #5a3a2e;
+    border-radius: 999px;
+    background: #dff4ff;
+    padding: 0.45rem 0.9rem;
+    color: #25145f;
+    font-weight: 1000;
+  }
+
+  .ac-loading-card h1 {
+    color: #5a3a2e;
+    font-size: clamp(2rem, 10vw, 3.5rem);
+    font-weight: 1000;
+    line-height: 1;
+  }
+
+  .ac-loading-card p {
+    color: #744f3d;
+    font-size: 1rem;
+    font-weight: 900;
+  }
+
+  .ac-loading-track {
+    overflow: hidden;
+    height: 1.2rem;
+    border: 2px solid #5a3a2e;
+    border-radius: 999px;
+    background: #fff9e8;
+  }
+
+  .ac-loading-track div {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #63c46c, #69b7ff, #ffdf73);
+    transition: width 180ms ease;
+  }
+
+  .ac-loading-card strong {
+    color: #5a3a2e;
+    font-size: 1.25rem;
+    font-weight: 1000;
+  }
+
   .ac-soft-button,
   .ac-small-button {
     border: 2px solid #5a3a2e;
