@@ -1,6 +1,7 @@
-const bedroom = "/assets/backgrounds/bedroom.png";
-const classroom = "/assets/backgrounds/classroom.png";
-const sportsGround = "/assets/backgrounds/sports-ground.png";
+import { assetPath } from "../utils/assetPath.js";
+const bedroom = assetPath("/assets/backgrounds/bedroom.png");
+const classroom = assetPath("/assets/backgrounds/classroom.png");
+const sportsGround = assetPath("/assets/backgrounds/sports-ground.png");
 
 function chars(list) {
   return list;
