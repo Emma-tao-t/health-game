@@ -383,10 +383,12 @@
   .ac-tool-image {
     display: grid;
     width: 100%;
-    height: 5.4rem;
+    height: clamp(5.8rem, 22vw, 7rem);
     overflow: hidden;
     place-items: center;
+    box-sizing: border-box;
     border-radius: 1rem;
+    padding: 0.62rem;
     background:
       radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.72), transparent 44%),
       linear-gradient(180deg, rgba(223, 244, 255, 0.68), rgba(255, 243, 176, 0.28));
@@ -395,10 +397,10 @@
   .ac-tool-img,
   .ac-tool-image img,
   .ac-tool-image > div {
-    width: 48%;
-    height: 48%;
-    max-width: 48%;
-    max-height: 48%;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
     object-position: center;
   }

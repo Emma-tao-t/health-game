@@ -17,7 +17,8 @@ export default function App() {
   const [screen, setScreen] = useState("home");
   const [routeId, setRouteId] = useState("nick");
   const [result, setResult] = useState(null);
-  const preloadList = useMemo(() => {
+  const coverImage = assetPath("/assets/cover/cover.jpg");
+  const warmupList = useMemo(() => {
     const routeBackgrounds = Object.values(routes).flatMap((route) =>
       Object.values(route.nodes || {}).map((node) => node.background),
     );
@@ -27,7 +28,6 @@ export default function App() {
     const toolAssetImages = toolImages.map((tool) => tool.image);
 
     return [
-      assetPath("/assets/cover/cover.jpg"),
       ...routeBackgrounds,
       ...characterImages,
       ...toolAssetImages,
@@ -37,7 +37,7 @@ export default function App() {
   useEffect(() => {
     let active = true;
 
-    preloadImages(preloadList, (progress) => {
+    preloadImages([coverImage], (progress) => {
       if (active) {
         setLoadProgress(progress);
       }
@@ -50,7 +50,25 @@ export default function App() {
     return () => {
       active = false;
     };
-  }, [preloadList]);
+  }, [coverImage]);
+
+  useEffect(() => {
+    if (!assetsReady) {
+      return undefined;
+    }
+
+    const startWarmup = () => {
+      preloadImages(warmupList);
+    };
+
+    if ("requestIdleCallback" in window) {
+      const id = window.requestIdleCallback(startWarmup, { timeout: 1500 });
+      return () => window.cancelIdleCallback(id);
+    }
+
+    const id = window.setTimeout(startWarmup, 250);
+    return () => window.clearTimeout(id);
+  }, [assetsReady, warmupList]);
 
   function openCharacterSelect() {
     setResult(null);
