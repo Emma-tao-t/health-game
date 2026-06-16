@@ -1,14 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import CharacterSelectPage from "./pages/CharacterSelectPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import GamePage from "./pages/GamePage.jsx";
 import KnowledgeCollectionPage from "./pages/KnowledgeCollectionPage.jsx";
 import ResultPage from "./pages/ResultPage.jsx";
+import { characters } from "./data/characters.js";
+import { routes } from "./data/routes.js";
+import { preloadImages } from "./utils/preloadImages.js";
 
 export default function App() {
   const [screen, setScreen] = useState("home");
   const [routeId, setRouteId] = useState("nick");
   const [result, setResult] = useState(null);
+  const storyWarmupList = useMemo(() => {
+    const routeBackgrounds = Object.values(routes).flatMap((route) =>
+      Object.values(route.nodes || {}).map((node) => node.background),
+    );
+    const characterImages = Object.values(characters).flatMap((character) =>
+      Object.values(character.images || {}),
+    );
+
+    return [...routeBackgrounds, ...characterImages];
+  }, []);
+
+  useEffect(() => {
+    if (screen !== "home") {
+      return undefined;
+    }
+
+    const warmup = () => preloadImages(storyWarmupList);
+    const timer = window.setTimeout(warmup, 550);
+    return () => window.clearTimeout(timer);
+  }, [screen, storyWarmupList]);
 
   function openCharacterSelect() {
     setResult(null);

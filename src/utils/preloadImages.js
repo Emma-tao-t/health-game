@@ -21,6 +21,8 @@ export function preloadImages(urls, onProgress) {
 
           image.onload = done;
           image.onerror = done;
+          image.decoding = "async";
+          image.fetchPriority = "low";
           image.src = url;
         }),
     ),

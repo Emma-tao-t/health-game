@@ -7,4 +7,5 @@ public/assets/**/*.tmp.png
 public/assets/characters-cutout/*-opt.png
 public/assets/tools-cutout/*-opt.png
 public/assets/tools-cutout/*-thumb.png
+public/assets/tools-cutout/*-tiny.png
 public/assets/cover/cover-test.jpg
