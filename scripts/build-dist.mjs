@@ -11,7 +11,6 @@ const root = path.resolve(scriptDir, "..");
 const dist = path.join(root, "dist");
 const appAssets = path.join(dist, "assets", "app");
 
-await fs.rm(dist, { recursive: true, force: true });
 await fs.mkdir(appAssets, { recursive: true });
 
 await build({
@@ -44,7 +43,7 @@ const cssResult = await postcss([
 await fs.writeFile(path.join(appAssets, "main.css"), cssResult.css);
 
 const placeholder = await fs.readFile(
-  path.join(root, "public", "assets", "cover", "cover-test.jpg"),
+  path.join(root, "public", "assets", "cover", "cover.jpg"),
 );
 const placeholderBase64 = placeholder.toString("base64");
 const html = `<!doctype html>
