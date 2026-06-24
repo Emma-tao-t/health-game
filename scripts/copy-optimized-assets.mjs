@@ -15,7 +15,6 @@ const sourceFiles = [
 ];
 
 const assets = new Set();
-assets.add("/assets/cover/cover-test.jpg");
 
 for (const file of sourceFiles) {
   const source = fs.readFileSync(path.join(root, file), "utf8");

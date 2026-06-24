@@ -3,7 +3,7 @@ $ErrorActionPreference = "Stop"
 $root = Resolve-Path (Join-Path $PSScriptRoot "..")
 $dist = Join-Path $root "dist"
 $assetsDir = Join-Path $dist "assets\app"
-$placeholderPath = Join-Path $root "public\assets\cover\cover-test.jpg"
+$placeholderPath = Join-Path $root "public\assets\cover\cover.jpg"
 $placeholderBase64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes($placeholderPath))
 
 New-Item -ItemType Directory -Force -Path $assetsDir | Out-Null
