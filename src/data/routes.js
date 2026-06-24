@@ -11,7 +11,7 @@ function choice(text, next, effects, knowledgeId, knowledge, tone = "good") {
   return { text, next, effects, knowledgeId, knowledge, tone };
 }
 
-export const routes = {
+const legacyRoutes = {
   nick: {
     id: "nick",
     title: "Nick 的一天",
@@ -388,4 +388,6 @@ export const routes = {
   },
 };
 
-export const routeList = Object.values(routes);
+const legacyRouteList = Object.values(legacyRoutes);
+
+export { routes, routeList } from "./routeDefinitions.js";

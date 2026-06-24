@@ -5,13 +5,17 @@ const root = process.cwd();
 const sourceFiles = [
   "index.html",
   "src/App.jsx",
+  "src/components/BackgroundMusic.jsx",
+  "src/components/ChoicePanel.jsx",
   "src/pages/HomePage.jsx",
+  "src/utils/sound.js",
   "src/data/routes.js",
   "src/data/characters.js",
   "src/data/toolImages.js",
 ];
 
 const assets = new Set();
+assets.add("/assets/cover/cover-test.jpg");
 
 for (const file of sourceFiles) {
   const source = fs.readFileSync(path.join(root, file), "utf8");
@@ -35,7 +39,16 @@ for (const asset of assets) {
   }
 
   fs.mkdirSync(path.dirname(to), { recursive: true });
-  fs.copyFileSync(from, to);
+  try {
+    fs.copyFileSync(from, to);
+  } catch (error) {
+    const fromSize = fs.statSync(from).size;
+    const toSize = fs.existsSync(to) ? fs.statSync(to).size : -1;
+    if (error.code === "EPERM" && toSize === fromSize) {
+      continue;
+    }
+    throw error;
+  }
 }
 
 console.log(`Copied ${assets.size} optimized assets.`);

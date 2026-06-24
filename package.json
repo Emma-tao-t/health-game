@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "npm run build && node scripts/serve-dist.mjs",
-    "build": "vite build",
+    "build": "powershell -ExecutionPolicy Bypass -File scripts/build-dist.ps1",
     "postbuild": "node scripts/copy-optimized-assets.mjs",
     "preview": "node scripts/serve-dist.mjs",
     "predeploy": "npm run build",

@@ -28,7 +28,14 @@ export default function CharacterSelectPage({ onSelect, onHome }) {
                 onClick={() => onSelect(route.id)}
               >
                 <div className="ac-route-avatar">
-                  <SafeImage src={image} alt={route.character} fallbackLabel={route.character} className="h-full w-full object-contain" />
+                  <SafeImage
+                    src={image}
+                    alt={route.character}
+                    fallbackLabel={route.character}
+                    className="h-full w-full object-contain"
+                    loading="eager"
+                    fetchPriority="high"
+                  />
                 </div>
                 <div className="ac-route-copy">
                   <span>{route.label}</span>

@@ -16,11 +16,17 @@ const mimeTypes = {
   ".jpeg": "image/jpeg",
   ".svg": "image/svg+xml",
   ".webp": "image/webp",
+  ".mp3": "audio/mpeg",
+  ".mp4": "video/mp4",
   ".ico": "image/x-icon",
 };
 
 function fileFromRequest(url) {
-  const pathname = decodeURIComponent(new URL(url, `http://${host}`).pathname);
+  let pathname = decodeURIComponent(new URL(url, `http://${host}`).pathname);
+  if (pathname === "/health-game") pathname = "/";
+  if (pathname.startsWith("/health-game/")) {
+    pathname = pathname.slice("/health-game".length);
+  }
   const requested = normalize(join(root, pathname));
   if (!requested.startsWith(root)) return null;
   if (existsSync(requested) && statSync(requested).isFile()) return requested;

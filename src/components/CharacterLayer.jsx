@@ -16,7 +16,15 @@ function CharacterSprite({ item }) {
   return (
     <div className={`vn-character ${positionClass[item.position] || positionClass.center} ${activeClass}`}>
       {src && !failed ? (
-        <img src={src} alt={item.name} className="h-full w-full object-contain" onError={() => setFailed(true)} />
+        <img
+          src={src}
+          alt={item.name}
+          className="h-full w-full object-contain"
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+          onError={() => setFailed(true)}
+        />
       ) : (
         <div className="vn-character-placeholder">{item.name}</div>
       )}

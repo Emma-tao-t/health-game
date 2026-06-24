@@ -1,7 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { getEnding } from "../data/endings.js";
+import { characters } from "../data/characters.js";
 import { knowledgeCards } from "../data/knowledgeCards.js";
 import { routes } from "../data/routes.js";
+import { preloadImages } from "../utils/preloadImages.js";
 import BackgroundLayer from "./BackgroundLayer.jsx";
 import CharacterLayer from "./CharacterLayer.jsx";
 import ChoicePanel from "./ChoicePanel.jsx";
@@ -25,12 +27,37 @@ export default function VisualNovel({ routeId, onFinish, onHome }) {
   const [snapshots, setSnapshots] = useState([]);
   const [unlockedKnowledge, setUnlockedKnowledge] = useState([]);
   const [knowledgeCard, setKnowledgeCard] = useState(null);
+  const [pendingNext, setPendingNext] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [autoPlay, setAutoPlay] = useState(false);
   const [textSpeed, setTextSpeed] = useState(2);
 
   const node = route.nodes[nodeId] || route.nodes[route.startNode];
+
+  useEffect(() => {
+    const nextIds = [
+      node.next,
+      ...(node.choices || []).map((choice) => choice.next),
+    ].filter((id) => id && id !== "ending");
+    const nextAssets = [...new Set(nextIds)].flatMap((id) => {
+      const nextNode = route.nodes[id];
+      if (!nextNode) return [];
+      return [
+        nextNode.background,
+        ...(nextNode.characters || []).map((item) => {
+          const profile = characters[item.name];
+          return profile?.images?.[item.expression] || profile?.images?.normal;
+        }),
+      ];
+    });
+
+    void preloadImages(nextAssets, undefined, {
+      concurrency: 4,
+      priority: "high",
+      timeout: 6000,
+    });
+  }, [node, route]);
 
   const snapshot = useCallback(
     () => ({
@@ -93,6 +120,10 @@ export default function VisualNovel({ routeId, onFinish, onHome }) {
 
   function handleStageClick(event) {
     if (event.target.closest("button, input, .vn-modal-backdrop")) return;
+    if (knowledgeCard) {
+      handleKnowledgeClose();
+      return;
+    }
     handleNext();
   }
 
@@ -111,14 +142,41 @@ export default function VisualNovel({ routeId, onFinish, onHome }) {
     setConfidenceValue(nextConfidence);
     setScienceValue(nextScience);
     setUnlockedKnowledge(nextUnlocked);
-    setKnowledgeCard({ title: knowledge?.title || "知识点", text: choice.knowledge, tone: choice.tone });
+    setKnowledgeCard({
+      title: knowledge?.title || "知识点",
+      summary: knowledge?.summary || knowledge?.text || choice.feedback,
+      consequence: choice.consequence,
+      feedback: choice.feedback,
+      tone: choice.tone,
+    });
+    setPendingNext({
+      next: choice.next,
+      smellValue: nextSmell,
+      confidenceValue: nextConfidence,
+      scienceValue: nextScience,
+      history: nextHistory,
+      unlockedKnowledge: nextUnlocked,
+    });
     setAutoPlay(false);
     setHistory(nextHistory);
-    if (choice.next === "ending") {
-      finish(nextSmell, nextConfidence, nextScience, nextHistory, nextUnlocked);
+  }
+
+  function handleKnowledgeClose() {
+    const pending = pendingNext;
+    setKnowledgeCard(null);
+    setPendingNext(null);
+    if (!pending) return;
+    if (pending.next === "ending") {
+      finish(
+        pending.smellValue,
+        pending.confidenceValue,
+        pending.scienceValue,
+        pending.history,
+        pending.unlockedKnowledge,
+      );
       return;
     }
-    setNodeId(choice.next);
+    setNodeId(pending.next);
   }
 
   function handleBack() {
@@ -132,6 +190,7 @@ export default function VisualNovel({ routeId, onFinish, onHome }) {
     setUnlockedKnowledge(last.unlockedKnowledge);
     setSnapshots((current) => current.slice(0, -1));
     setKnowledgeCard(null);
+    setPendingNext(null);
   }
 
   function handleSkip() {
@@ -148,6 +207,7 @@ export default function VisualNovel({ routeId, onFinish, onHome }) {
     setNodeId(current.id);
     setAutoPlay(false);
     setKnowledgeCard(null);
+    setPendingNext(null);
   }
 
   function resetGame() {
@@ -159,6 +219,7 @@ export default function VisualNovel({ routeId, onFinish, onHome }) {
     setSnapshots([]);
     setUnlockedKnowledge([]);
     setKnowledgeCard(null);
+    setPendingNext(null);
     setShowSettings(false);
     setAutoPlay(false);
   }
@@ -182,7 +243,7 @@ export default function VisualNovel({ routeId, onFinish, onHome }) {
       <StatusBar smellValue={smellValue} confidenceValue={confidenceValue} scienceValue={scienceValue} />
       <button type="button" className="vn-home-button" onClick={onHome}>首页</button>
       <CharacterLayer characterList={characterList} />
-      <ChoicePanel choices={node.choices} onChoose={handleChoose} />
+      <ChoicePanel choices={knowledgeCard ? null : node.choices} onChoose={handleChoose} />
       <DialogueBox
         node={node}
         onNext={handleNext}
@@ -193,7 +254,7 @@ export default function VisualNovel({ routeId, onFinish, onHome }) {
         onAuto={() => setAutoPlay((value) => !value)}
         onSettings={() => setShowSettings(true)}
       />
-      <KnowledgeCard card={knowledgeCard} onClose={() => setKnowledgeCard(null)} />
+      <KnowledgeCard card={knowledgeCard} onClose={handleKnowledgeClose} />
       {showHistory ? <HistoryModal entries={history} onClose={() => setShowHistory(false)} /> : null}
       {showSettings ? (
         <SettingsModal textSpeed={textSpeed} onTextSpeed={setTextSpeed} onReset={resetGame} onClose={() => setShowSettings(false)} />

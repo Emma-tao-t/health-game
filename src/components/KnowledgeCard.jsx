@@ -7,11 +7,12 @@ export default function KnowledgeCard({ card, onClose }) {
 
   return (
     <aside className={`vn-knowledge ${tone}`}>
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-sm font-black text-[#6f4b28]">{card.title || "知识点"}</p>
-        <button type="button" className="vn-close" onClick={onClose}>关闭</button>
+      <div className="vn-knowledge-head">
+        <p>{card.title || "知识点"}</p>
+        <span>点击任意位置继续</span>
       </div>
-      <p className="mt-2 text-sm font-bold leading-6 text-[#3b2718]">{card.text}</p>
+      <p className="vn-knowledge-body">{card.feedback}</p>
+      <p className="vn-knowledge-unlocked">已解锁到清爽知识图鉴</p>
     </aside>
   );
 }
